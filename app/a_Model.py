@@ -1,0 +1,53 @@
+import re
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tag.stanford import StanfordPOSTagger
+from nltk.corpus import stopwords
+from nltk.stem.porter import *
+
+pos_saved = set(['FW','JJ','JJR','JJS','NN','NNP','NNPS','NNS','RB','RBR','VB','VBD','VBG','VBN','VBP','VBZ'])
+stops = set(stopwords.words('english'))
+stemmer = PorterStemmer()
+
+
+def ModelIt(fromUser  = 'Default', population = 0):
+  print('The population is %i' % population)
+  result = population/1000000.0
+  if fromUser != 'Default':
+    return result
+  else:
+    return 'check your input'
+
+def process_text(txt):
+
+    txt = re.sub(r'^b[\'\"]','\n',txt)
+    txt = re.sub(r'image\:\:',' ',txt)
+    txt = re.sub(r'\:[a-zA-Z]*\:',' ',txt)
+
+    txt = re.sub(r'\~\~[^\~]*\~\~',' ',txt)
+    txt = re.sub(r'\`\`\`[^\`]*\`\`\`',' ',txt)
+    txt = re.sub(r'\`[^\`]*\`',' ',txt)
+    txt = re.sub(r'\n([^\n]*\|[^\n]*\n+)*','\n',txt)
+    txt = re.sub(r'^([^\n]*\|[^\n]*\n+)*','\n',txt)
+    txt = re.sub(r'\<[^\<\>]*\>',' ',txt)
+    txt = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',' ',txt)
+    txt = re.sub(r'\n(\s*[\>\*\#\-\+\$][^\n]*\n+)*','\n',txt)
+    txt = re.sub(r'^(\s*[\>\*\#\-\+\$][^\n]*\n+)*','\n',txt)
+
+
+    txt = re.sub(r'\n(\s*[0-9]+\.[^\n]*\n+)*','\n',txt)
+    txt = re.sub(r'^(\s*[0-9]+\.[^\n]*\n+)*','\n',txt)
+    txt = re.sub(r'[\~\`\!\@\#\$\%\^\&\*\(\)\_\-\=\{\}\\\[\]\:\;\"\'\<\>\?\/\,\.]',' ',txt)
+    txt = txt.lower()
+    words = word_tokenize(txt)
+#    print("before")
+#    print(words)
+#    print("beginning")
+    processed_words = [stemmer.stem(member.decode("utf-8","replace")) for member in words if member not in ["]","[","(",")"] and member not in stops and member.find("/")==-1 and member.find("\'")==-1 and member.find("\"")==-1 and not re.search(r'[^a-zA-Z0-9\+]',member)]
+#    print("processed")
+#    print(processed_words)
+    txt = ' '.join(processed_words)
+    
+#    print("text")
+#    print(txt)
+    return txt
