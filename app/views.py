@@ -10,10 +10,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import linear_kernel
 import numpy as np
 import base64
-db = mdb.connect(user="root", passwd="shsh2010", host="localhost", db="ghtorrent", charset='utf8')
+db = mdb.connect(user="root", passwd="", host="localhost", db="ghtorrent", charset='utf8')
 from github import Github
 import time
-ACCESS_TOKEN = '312b732f294fcf04cb16bb23a2751e9384fbcd9d'
+ACCESS_TOKEN = ''
 
 client = Github(ACCESS_TOKEN, per_page=100)
 
